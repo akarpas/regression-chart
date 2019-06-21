@@ -161,6 +161,13 @@ const LinearRegressionChart = () => {
             .attr("d", line);
         });
     });
+
+    d3.select(".chart-container").append("button")
+      .text("Clear Regressions")
+      .on("click",() => {
+        console.warn('clear')
+        d3.selectAll("path.line").remove()
+      });
   }
 
   return (
