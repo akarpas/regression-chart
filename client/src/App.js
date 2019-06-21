@@ -35,7 +35,7 @@ const App = () => {
           xAxisLabel={X_AXIS_LABEL}
           margin={margin}
           width={width}
-          heigh={height}
+          height={height}
         />}
         <button
           className="button"
