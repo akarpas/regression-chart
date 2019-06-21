@@ -164,6 +164,7 @@ const LinearRegressionChart = () => {
 
     d3.select(".chart-container").append("button")
       .text("Clear Regressions")
+      .attr("class", "button")
       .on("click",() => {
         console.warn('clear')
         d3.selectAll("path.line").remove()

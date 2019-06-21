@@ -6,9 +6,12 @@
 }
 
 .axis text {
-
   font-size: 10px;
   font-family: sans-serif;
+}
+
+.button {
+  width: 150px;
 }
 
 .chart-container {
