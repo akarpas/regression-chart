@@ -11,7 +11,6 @@ const LinearRegressionChart = (props) => {
     drawChart(props.data)
   }, [props.columnType]); // eslint-disable-line
 
-
   const drawChart = (data) => {
     const parsedData = parseData(data, columnType);
 
@@ -26,16 +25,15 @@ const LinearRegressionChart = (props) => {
 
     const x = d3.scaleLinear().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
-  
-    const make_gridlines = (type) => {
+
+    const makeGridLines = (type) => {
       return type === 'x'
         ? d3.axisBottom(x).ticks(10)
         : d3.axisLeft(y).ticks(10)
     }
 
-    const xAxis = d3.axisBottom().scale(x).ticks(20)
-
-    const yAxis = d3.axisLeft().scale(y).ticks(20)
+    const xAxis = d3.axisBottom().scale(x).ticks(20);
+    const yAxis = d3.axisLeft().scale(y).ticks(20);
 
     d3.select("#chart svg").remove();
     d3.selectAll(".chart-container button").remove();
@@ -49,17 +47,17 @@ const LinearRegressionChart = (props) => {
     svg.append("g")
       .attr("class", "grid")
       .attr("transform", "translate(0," + height + ")")
-      .call(make_gridlines('x')
+      .call(makeGridLines('x')
         .tickSize(-height)
         .tickFormat("")
-      )
+      );
 
-    svg.append("g")			
+    svg.append("g")
       .attr("class", "grid")
-      .call(make_gridlines('y')
+      .call(makeGridLines('y')
           .tickSize(-width)
           .tickFormat("")
-      )
+      );
 
     let fullData = [];
 
@@ -110,7 +108,8 @@ const LinearRegressionChart = (props) => {
       .text(xAxisLabel);
 
     const formattedColumnType = columnType.replace( /([A-Z])/g, " $1" );
-    const yAxisLabel = formattedColumnType.charAt(0).toUpperCase() + formattedColumnType.slice(1);
+    const yAxisLabel =
+      formattedColumnType.charAt(0).toUpperCase() + formattedColumnType.slice(1);
 
     svg.append("text")
       .attr("transform", "rotate(-90)")
