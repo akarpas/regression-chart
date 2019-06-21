@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LinearRegressionChart from './components/LinearRegressionChart';
 import style from './App.module.css';
 
 const App = () => {
+  const [columnType, setColumnType] = useState('responseTime'); // eslint-disable-line
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:4000/api/v1/data')
+      .then(response => response.json())
+      .then(result => {
+        const { data } = result;
+        setData(data);
+      })
+  }, []); // eslint-disable-line
+
   return (
     <div className={style.app}>
-      <LinearRegressionChart />
+      {data && <LinearRegressionChart data={data} columnType={columnType} />}
     </div>
   );
 }

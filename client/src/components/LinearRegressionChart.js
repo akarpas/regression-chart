@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { parseData } from '../utils/dataParser';
 import * as d3 from 'd3';
 
 import './LinearRegressionChart.css';
 
-const LinearRegressionChart = () => {
-  const [columnType, setColumnType] = useState('responseTime'); // eslint-disable-line
+const LinearRegressionChart = (props) => {
+  const { columnType } = props;
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/v1/data')
-      .then(response => response.json())
-      .then(result => {
-        const { data } = result;
-        drawChart(data);
-      })
+    drawChart(props.data)
   }, []); // eslint-disable-line
 
   const drawChart = (data) => {
