@@ -19,18 +19,25 @@ const LinearRegressionChart = () => {
   }, []);
 
   const parseData = (data) => {
-    const parsedData = data.data.server_1.map(item => {
-      return [item.serverLoad, item.responseTime];
-    })
+    // TO DO - Calculate regression data dynamically on button click
 
-    const result = regression.linear(parsedData);
-    const { points } = result;
+    return Object.keys(data.data).map((key, index) => {
+      const xyData = data.data[key].map(item => {
+        return [item.serverLoad, item.responseTime];
+      })
+      const regressionData = regression.linear(xyData);
+      const { points } = regressionData;
 
-    return points.map((point, index) => {
       return {
-        yhat: point[1],
-        y: parsedData[index][1],
-        x: parsedData[index][0]
+        server: key,
+        regressionPoints: points,
+        points: data.data[key].map((item, index) => {
+          return {
+            x: item.serverLoad,
+            y: item.responseTime,
+            yhat: points[index][1]
+          };
+        })
       }
     })
   }
@@ -46,12 +53,11 @@ const LinearRegressionChart = () => {
     height = 500 - margin.top - margin.bottom;
 
     const x = d3.scaleLinear().range([0, width]);
-    console.warn(x);
     const y = d3.scaleLinear().range([height, 0]);
 
-    const xAxis = d3.axisBottom().scale(x)
+    const xAxis = d3.axisBottom().scale(x).ticks(20)
 
-    const yAxis = d3.axisLeft().scale(y)
+    const yAxis = d3.axisLeft().scale(y).ticks(20)
 
     const svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -59,26 +65,32 @@ const LinearRegressionChart = () => {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    data.forEach((d) => {
-      d.x = +d.x;
-      d.y = +d.y;
-      d.yhat = +d.yhat;
-    });
+    let fullData = [];
 
-    const line = d3.line()
-    .x((d) => {
-        return x(d.x);
+    data.forEach(dataSet => {
+      fullData.push(dataSet.points);
     })
-    .y((d) => {
-        return y(d.yhat);
-    });
 
-    x.domain(d3.extent(data, (d) => {
-      return d.x;
-    }));
-    y.domain(d3.extent(data, (d) => {
-      return d.y;
-    }));
+    fullData = fullData.flat();
+    const xData = fullData.map(point => point.x);
+
+    const yData = fullData.map(point => point.y);
+    const maxX = Math.max(...xData);
+    const maxY = Math.max(...yData);
+    const minX = Math.min(...xData);
+    const minY = Math.min(...yData);
+
+    // TO DO - Create line dynamically on button click
+    const line = d3.line()
+      .x((d) => {
+        return x(d.x);
+      })
+      .y((d) => {
+        return y(d.yhat);
+      });
+
+    y.domain([minY - 1, maxY + 1]);
+    x.domain([minX - 0.5, maxX + 0.5]);
 
     svg.append("g")
       .attr("class", "x axis")
@@ -102,22 +114,33 @@ const LinearRegressionChart = () => {
       .style("text-anchor", "end")
       .text("Y-Value")
 
-    svg.selectAll(".dot")
-      .data(data)
-      .enter().append("circle")
-      .attr("class", "dot")
-      .attr("r", 3.5)
-      .attr("cx", (d) => {
-          return x(d.x);
-      })
-      .attr("cy", (d) => {
-          return y(d.y);
+    data.forEach((dataSet, index) => {
+      const { points } = dataSet;
+
+      points.forEach((d) => {
+        d.x = +d.x;
+        d.y = +d.y;
+        d.yhat = +d.yhat;
       });
 
-    svg.append("path")
-      .datum(data)
-      .attr("class", "line")
-      .attr("d", line);
+      svg.selectAll("dot")
+        .data(points)
+        .enter().append("circle")
+        .attr("class", `dot${index + 1}`)
+        .attr("r", 3.5)
+        .attr("cx", (d) => {
+            return x(d.x);
+        })
+        .attr("cy", (d) => {
+            return y(d.y);
+        });
+
+      // TO DO - Create line dynamically on button click
+      svg.append("path")
+        .datum(points)
+        .attr("class", `line${index + 1}`)
+        .attr("d", line);
+    })
   }
 
   return (<div></div>);
