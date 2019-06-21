@@ -6,14 +6,14 @@ import './LinearRegressionChart.css';
 
 const LinearRegressionChart = () => {
   const [graphData, setGraphData] = useState(null);
+  const [columnType, setColumnType] = useState('responseTime');
 
   useEffect(() => {
     fetch('http://localhost:4000/api/v1/data')
       .then(response => response.json())
       .then(data => {
         setGraphData(data);
-        const parsedData = parseData(data);
-        drawChart(parsedData);
+        drawChart(data);
       })
     return;
   }, []);
@@ -23,7 +23,7 @@ const LinearRegressionChart = () => {
 
     return Object.keys(data.data).map((key, index) => {
       const xyData = data.data[key].map(item => {
-        return [item.serverLoad, item.responseTime];
+        return [item.serverLoad, item[columnType]];
       })
       const regressionData = regression.linear(xyData);
       const { points } = regressionData;
@@ -34,7 +34,7 @@ const LinearRegressionChart = () => {
         points: data.data[key].map((item, index) => {
           return {
             x: item.serverLoad,
-            y: item.responseTime,
+            y: item[columnType],
             yhat: points[index][1]
           };
         })
@@ -43,6 +43,8 @@ const LinearRegressionChart = () => {
   }
 
   const drawChart = (data) => {
+    const parsedData = parseData(data);
+
     const margin = {
       top: 20,
       right: 20,
@@ -67,7 +69,7 @@ const LinearRegressionChart = () => {
 
     let fullData = [];
 
-    data.forEach(dataSet => {
+    parsedData.forEach(dataSet => {
       fullData.push(dataSet.points);
     })
 
@@ -128,9 +130,9 @@ const LinearRegressionChart = () => {
       .attr("x",0 - (height / 2))
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .text("Y-AXIS");      
+      .text("Y-AXIS");
 
-    data.forEach((dataSet, index) => {
+    parsedData.forEach((dataSet, index) => {
       const { points } = dataSet;
 
       points.forEach((d) => {
