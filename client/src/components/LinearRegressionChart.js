@@ -51,8 +51,8 @@ const LinearRegressionChart = () => {
       bottom: 30,
       left: 40
     },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = 600 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
     const x = d3.scaleLinear().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
@@ -61,7 +61,7 @@ const LinearRegressionChart = () => {
 
     const yAxis = d3.axisLeft().scale(y).ticks(20)
 
-    const svg = d3.select("body").append("svg")
+    const svg = d3.select("#chart").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -161,7 +161,11 @@ const LinearRegressionChart = () => {
     })
   }
 
-  return (<div></div>);
+  return (
+    <div className="chart-container">
+      <div id="chart"></div>
+    </div>
+  );
 }
 
 export default LinearRegressionChart;
