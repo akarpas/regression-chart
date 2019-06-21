@@ -1,10 +1,11 @@
 import React from 'react';
+import LinearRegressionChart from './components/LinearRegressionChart';
 import style from './App.module.css';
 
-function App() {
+const App = () => {
   return (
     <div className={style.app}>
-
+      <LinearRegressionChart />
     </div>
   );
 }
