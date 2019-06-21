@@ -26,14 +26,14 @@ const App = () => {
           xAxisLabel={X_AXIS_LABEL}
           />
         }
-      <button
-        className="button"
-        onClick={
-          e => setColumnType(columnType === 'responseTime' ? 'processingPower' : 'responseTime')
-        }
-      >
-        Change
-      </button>
+        <button
+          className="button"
+          onClick={
+            e => setColumnType(columnType === 'responseTime' ? 'processingPower' : 'responseTime')
+          }
+        >
+          Toggle Data
+        </button>
     </div>
   );
 }
