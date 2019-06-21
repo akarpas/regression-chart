@@ -5,7 +5,7 @@ const { calcData } = require('./utils/data');
 const DEFAULT_PORT = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '2000kb' }));
 
 const port = process.env.PORT || DEFAULT_PORT;
 
