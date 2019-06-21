@@ -5,24 +5,20 @@ import * as d3 from 'd3';
 import './LinearRegressionChart.css';
 
 const LinearRegressionChart = () => {
-  const [graphData, setGraphData] = useState(null);
   const [columnType, setColumnType] = useState('responseTime');
 
   useEffect(() => {
     fetch('http://localhost:4000/api/v1/data')
       .then(response => response.json())
-      .then(data => {
-        setGraphData(data);
+      .then(result => {
+        const { data } = result;
         drawChart(data);
       })
-    return;
-  }, []);
+  }, []); // eslint-disable-line
 
   const parseData = (data) => {
-    // TO DO - Calculate regression data dynamically on button click
-
-    return Object.keys(data.data).map((key, index) => {
-      const xyData = data.data[key].map(item => {
+    return Object.keys(data).map((key, index) => {
+      const xyData = data[key].map(item => {
         return [item.serverLoad, item[columnType]];
       })
       const regressionData = regression.linear(xyData);
@@ -31,7 +27,7 @@ const LinearRegressionChart = () => {
       return {
         server: key,
         regressionPoints: points,
-        points: data.data[key].map((item, index) => {
+        points: data[key].map((item, index) => {
           return {
             x: item.serverLoad,
             y: item[columnType],
@@ -64,6 +60,7 @@ const LinearRegressionChart = () => {
     const svg = d3.select("#chart").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
+      .attr("id", "chart-svg")
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -75,21 +72,11 @@ const LinearRegressionChart = () => {
 
     fullData = fullData.flat();
     const xData = fullData.map(point => point.x);
-
     const yData = fullData.map(point => point.y);
     const maxX = Math.max(...xData);
     const maxY = Math.max(...yData);
     const minX = Math.min(...xData);
     const minY = Math.min(...yData);
-
-    // TO DO - Create line dynamically on button click
-    const line = d3.line()
-      .x((d) => {
-        return x(d.x);
-      })
-      .y((d) => {
-        return y(d.yhat);
-      });
 
     y.domain([minY - 1, maxY + 1]);
     x.domain([minX - 0.5, maxX + 0.5]);
@@ -152,13 +139,28 @@ const LinearRegressionChart = () => {
         .attr("cy", (d) => {
             return y(d.y);
         });
-
-      // TO DO - Create line dynamically on button click
-      svg.append("path")
-        .datum(points)
-        .attr("class", `line${index + 1}`)
-        .attr("d", line);
     })
+
+    d3.select(".chart-container").append("button")
+      .text("Regressions")
+      .attr("class", "button")
+      .on("click",() => {
+        parsedData.forEach((dataSet, index) => {
+          const { points } = dataSet;
+          const line = d3.line()
+            .x((d) => {
+              return x(d.x);
+            })
+            .y((d) => {
+              return y(d.yhat);
+            });
+
+          svg.append("path")
+            .datum(points)
+            .attr("class", `line${index + 1} line`)
+            .attr("d", line);
+        });
+    });
   }
 
   return (
