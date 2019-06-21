@@ -9,11 +9,11 @@ const calcData = (dataSets) => {
     data[serverId] = [];
     for (let j = 0; j < 15; j++) {
       const set = {
-        serverLoad: (Math.random() * 100),
+        serverLoad: (j * 2 + 20),
         // Add i to make each dataset value a bit larger than previous
         // for presentation reasons
-        responseTime: Math.random() + i,
-        processingPower: Math.random() + i,
+        responseTime: Math.random() + ((i + 1) * 3),
+        processingPower: Math.random() + i + 5,
       };
       data[serverId].push(set);
     }

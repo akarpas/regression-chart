@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const { calcData } = require('./utils/data');
-const DEFAULT_PORT = 3000;
+const DEFAULT_PORT = 4000;
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '2000kb' }));
 

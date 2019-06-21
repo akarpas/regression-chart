@@ -1,0 +1,69 @@
+.axis path,
+.axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+
+  font-size: 10px;
+  font-family: sans-serif;
+}
+
+.chart-container {
+  width: 100vw;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-label {
+  font-size: 10px;
+  font-family: sans-serif;
+}
+
+.dot1 {
+  stroke: black;
+  fill: yellow
+}
+
+.dot2 {
+  stroke: black;
+  fill: red
+}
+
+.dot3 {
+  stroke: black;
+  fill: blue
+}
+
+.dot4 {
+  stroke: black;
+  fill: green
+}
+
+.line1 {
+  stroke: yellow;
+  fill: none;
+  stroke-width: 3;
+}
+
+.line2 {
+  stroke: red;
+  fill: none;
+  stroke-width: 3;
+}
+
+.line3 {
+  stroke: blue;
+  fill: none;
+  stroke-width: 3;
+}
+
+.line4 {
+  stroke: green;
+  fill: none;
+  stroke-width: 3;
+}
