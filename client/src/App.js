@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import LinearRegressionChart from './components/LinearRegressionChart';
 import style from './App.module.css';
 
+const X_AXIS_LABEL = 'Server Load';
+
 const App = () => {
   const [columnType, setColumnType] = useState('responseTime'); // eslint-disable-line
   const [data, setData] = useState(null);
@@ -17,7 +19,21 @@ const App = () => {
 
   return (
     <div className={style.app}>
-      {data && <LinearRegressionChart data={data} columnType={columnType} />}
+      {data &&
+        <LinearRegressionChart
+          data={data}
+          columnType={columnType}
+          xAxisLabel={X_AXIS_LABEL}
+          />
+        }
+      <button
+        className="button"
+        onClick={
+          e => setColumnType(columnType === 'responseTime' ? 'processingPower' : 'responseTime')
+        }
+      >
+        Change
+      </button>
     </div>
   );
 }

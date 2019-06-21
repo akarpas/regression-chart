@@ -5,11 +5,11 @@ import * as d3 from 'd3';
 import './LinearRegressionChart.css';
 
 const LinearRegressionChart = (props) => {
-  const { columnType } = props;
+  const { columnType, xAxisLabel } = props;
 
   useEffect(() => {
     drawChart(props.data)
-  }, []); // eslint-disable-line
+  }, [props.columnType]); // eslint-disable-line
 
   const drawChart = (data) => {
     const parsedData = parseData(data, columnType);
@@ -30,6 +30,8 @@ const LinearRegressionChart = (props) => {
 
     const yAxis = d3.axisLeft().scale(y).ticks(20)
 
+    d3.select("#chart svg").remove();
+    d3.selectAll(".chart-container button").remove();
     const svg = d3.select("#chart").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -82,7 +84,7 @@ const LinearRegressionChart = (props) => {
         "translate(" + (width / 2) + " ," + (height + 30) + ")"
       )
       .style("text-anchor", "middle")
-      .text("X-AXIS");
+      .text(xAxisLabel);
 
     svg.append("text")
       .attr("transform", "rotate(-90)")
@@ -90,7 +92,7 @@ const LinearRegressionChart = (props) => {
       .attr("x",0 - (height / 2))
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .text("Y-AXIS");
+      .text(columnType);
 
     parsedData.forEach((dataSet, index) => {
       const { points } = dataSet;
