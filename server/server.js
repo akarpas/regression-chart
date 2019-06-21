@@ -13,6 +13,7 @@ const router = express.Router();
 
 app.use('/api/v1', router);
 
+// Get request for standard of 3 data sets
 router.get('/data', (req, res) => {
   const data = calcData();
   res.send({
@@ -22,6 +23,7 @@ router.get('/data', (req, res) => {
   });
 });
 
+// Get request for dynamic data sets using parameters
 router.get('/data/:dataSets', (req, res) => {
   const data = calcData(req.params.dataSets);
   res.send({
