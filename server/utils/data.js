@@ -5,8 +5,8 @@ const calcData = (dataSets) => {
   for (let i = 0; i < totalDataSets; i++) {
 
     // Set dynamic server name
-    const serverName = `server_${i + 1}`;
-    data[serverName] = [];
+    const serverId = `server_${i + 1}`;
+    data[serverId] = [];
     for (let j = 0; j < 15; j++) {
       const set = {
         serverLoad: (Math.random() * 100),
@@ -15,7 +15,7 @@ const calcData = (dataSets) => {
         responseTime: Math.random() + i,
         processingPower: Math.random() + i,
       };
-      data[serverName].push(set);
+      data[serverId].push(set);
     }
   }
   return data;
