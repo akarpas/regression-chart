@@ -86,13 +86,16 @@ const LinearRegressionChart = (props) => {
       .style("text-anchor", "middle")
       .text(xAxisLabel);
 
+    const formattedColumnType = columnType.replace( /([A-Z])/g, " $1" );
+    const yAxisLabel = formattedColumnType.charAt(0).toUpperCase() + formattedColumnType.slice(1);
+
     svg.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin.left)
       .attr("x",0 - (height / 2))
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .text(columnType);
+      .text(yAxisLabel);
 
     parsedData.forEach((dataSet, index) => {
       const { points } = dataSet;
