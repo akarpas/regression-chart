@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import './LinearRegressionChart.css';
 
 const LinearRegressionChart = (props) => {
-  const { columnType, xAxisLabel } = props;
+  const { columnType, xAxisLabel, margin, width, height } = props;
 
   useEffect(() => {
     drawChart(props.data)
@@ -13,15 +13,6 @@ const LinearRegressionChart = (props) => {
 
   const drawChart = (data) => {
     const parsedData = parseData(data, columnType);
-
-    const margin = {
-      top: 20,
-      right: 20,
-      bottom: 60,
-      left: 40
-    },
-    width = 600 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
 
     const x = d3.scaleLinear().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);

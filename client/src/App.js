@@ -17,6 +17,15 @@ const App = () => {
       })
   }, []); // eslint-disable-line
 
+  const margin = {
+    top: 20,
+    right: 20,
+    bottom: 60,
+    left: 40
+  },
+  width = 600 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+
   return (
     <div className={style.app}>
       {data &&
@@ -24,8 +33,10 @@ const App = () => {
           data={data}
           columnType={columnType}
           xAxisLabel={X_AXIS_LABEL}
-          />
-        }
+          margin={margin}
+          width={width}
+          heigh={height}
+        />}
         <button
           className="button"
           onClick={
