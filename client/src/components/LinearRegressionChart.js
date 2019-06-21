@@ -18,7 +18,7 @@ const LinearRegressionChart = (props) => {
     const margin = {
       top: 20,
       right: 20,
-      bottom: 30,
+      bottom: 60,
       left: 40
     },
     width = 600 - margin.left - margin.right,
@@ -103,8 +103,9 @@ const LinearRegressionChart = (props) => {
     svg.append("text")
       .attr(
         "transform",
-        "translate(" + (width / 2) + " ," + (height + 30) + ")"
+        "translate(" + (width / 2) + " ," + (height + margin.bottom/2 + 10) + ")"
       )
+      .attr("class","axis-label")
       .style("text-anchor", "middle")
       .text(xAxisLabel);
 
@@ -116,6 +117,7 @@ const LinearRegressionChart = (props) => {
       .attr("y", 0 - margin.left)
       .attr("x",0 - (height / 2))
       .attr("dy", "1em")
+      .attr("class","axis-label")
       .style("text-anchor", "middle")
       .text(yAxisLabel);
 
