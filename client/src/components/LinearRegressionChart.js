@@ -117,32 +117,29 @@ const LinearRegressionChart = (props) => {
     })
 
     d3.select(".chart-container").append("button")
-      .text("Regressions")
+      .text("Toggle Regressions")
       .attr("class", "button")
       .on("click",() => {
-        parsedData.forEach((dataSet, index) => {
-          const { points } = dataSet;
-          const line = d3.line()
-            .x((d) => {
-              return x(d.x);
-            })
-            .y((d) => {
-              return y(d.yhat);
-            });
+        if (!d3.selectAll(".line").empty()) {
+          d3.selectAll("path.line").remove()
+        } else {
+          parsedData.forEach((dataSet, index) => {
+            const { points } = dataSet;
+            const line = d3.line()
+              .x((d) => {
+                return x(d.x);
+              })
+              .y((d) => {
+                return y(d.yhat);
+              });
 
-          svg.append("path")
-            .datum(points)
-            .attr("class", `line${index + 1} line`)
-            .attr("d", line);
-        });
+            svg.append("path")
+              .datum(points)
+              .attr("class", `line${index + 1} line`)
+              .attr("d", line);
+          });
+        }
     });
-
-    d3.select(".chart-container").append("button")
-      .text("Clear Regressions")
-      .attr("class", "button")
-      .on("click",() => {
-        d3.selectAll("path.line").remove()
-      });
   }
 
   return (
