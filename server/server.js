@@ -19,7 +19,7 @@ router.get('/data', (req, res) => {
   res.send({
     status: 'ok',
     statusCode: 200,
-    data: data
+    data
   });
 });
 
@@ -29,7 +29,7 @@ router.get('/data/:dataSets', (req, res) => {
   res.send({
     status: 'ok',
     statusCode: 200,
-    data: data
+    data
   });
 });
 
