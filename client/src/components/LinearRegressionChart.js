@@ -114,12 +114,6 @@ const LinearRegressionChart = (props) => {
     parsedData.forEach((dataSet, index) => {
       const { points } = dataSet;
 
-      points.forEach((d) => {
-        d.x = +d.x;
-        d.y = +d.y;
-        d.yhat = +d.yhat;
-      });
-
       svg.selectAll("dot")
         .data(points)
         .enter().append("circle")
@@ -138,17 +132,13 @@ const LinearRegressionChart = (props) => {
       .attr("class", "button")
       .on("click",() => {
         if (!d3.selectAll(".line").empty()) {
-          d3.selectAll("path.line").remove()
+          d3.selectAll("path.line").remove();
         } else {
           parsedData.forEach((dataSet, index) => {
             const { points } = dataSet;
             const line = d3.line()
-              .x((d) => {
-                return x(d.x);
-              })
-              .y((d) => {
-                return y(d.yhat);
-              });
+              .x((d) => x(d.x))
+              .y((d) => y(d.yhat));
 
             svg.append("path")
               .datum(points)
