@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import regression from 'regression';
+import { parseData } from '../utils/dataParser';
 import * as d3 from 'd3';
 
 import './LinearRegressionChart.css';
 
 const LinearRegressionChart = () => {
-  const [columnType, setColumnType] = useState('responseTime');
+  const [columnType, setColumnType] = useState('responseTime'); // eslint-disable-line
 
   useEffect(() => {
     fetch('http://localhost:4000/api/v1/data')
@@ -16,30 +16,8 @@ const LinearRegressionChart = () => {
       })
   }, []); // eslint-disable-line
 
-  const parseData = (data) => {
-    return Object.keys(data).map((key, index) => {
-      const xyData = data[key].map(item => {
-        return [item.serverLoad, item[columnType]];
-      })
-      const regressionData = regression.linear(xyData);
-      const { points } = regressionData;
-
-      return {
-        server: key,
-        regressionPoints: points,
-        points: data[key].map((item, index) => {
-          return {
-            x: item.serverLoad,
-            y: item[columnType],
-            yhat: points[index][1]
-          };
-        })
-      }
-    })
-  }
-
   const drawChart = (data) => {
-    const parsedData = parseData(data);
+    const parsedData = parseData(data, columnType);
 
     const margin = {
       top: 20,
@@ -166,7 +144,6 @@ const LinearRegressionChart = () => {
       .text("Clear Regressions")
       .attr("class", "button")
       .on("click",() => {
-        console.warn('clear')
         d3.selectAll("path.line").remove()
       });
   }
