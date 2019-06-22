@@ -5,8 +5,9 @@ import style from './App.module.css';
 const X_AXIS_LABEL = 'Server Load';
 
 const App = () => {
-  const [columnType, setColumnType] = useState('responseTime'); // eslint-disable-line
+  const [columnType, setColumnType] = useState('responseTime');
   const [data, setData] = useState(null);
+  const [showLines, setShowLines] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:4000/api/v1/data')
@@ -14,8 +15,8 @@ const App = () => {
       .then(result => {
         const { data } = result;
         setData(data);
-      })
-  }, []); // eslint-disable-line
+      });
+  }, []);
 
   const margin = {
     top: 20,
@@ -25,6 +26,7 @@ const App = () => {
   },
   width = 600 - margin.left - margin.right,
   height = 400 - margin.top - margin.bottom;
+  const isResponseTime = columnType === 'responseTime';
 
   return (
     <div className={style.app}>
@@ -36,15 +38,27 @@ const App = () => {
           margin={margin}
           width={width}
           height={height}
+          showLines={showLines}
         />}
         <button
           className="button"
           onClick={
-            e => setColumnType(columnType === 'responseTime' ? 'processingPower' : 'responseTime')
+            () => {
+              setColumnType(isResponseTime ? 'processingPower' : 'responseTime');
+              setShowLines(false);
+            }
           }
         >
-          Toggle Data
+          {isResponseTime ? 'Processing Power' : 'Response Time'}
         </button>
+        <button
+          className="button"
+          onClick={
+            () => setShowLines(!showLines)
+          }
+        >
+          {showLines ? 'Hide Regressions' : 'Calculate Regressions'}
+      </button>
     </div>
   );
 }
