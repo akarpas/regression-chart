@@ -1,95 +1,90 @@
-import React, { useEffect, useState } from 'react';
-import regression from 'regression';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { parseData, calculateRegressions } from '../utils/dataParser';
 import * as d3 from 'd3';
 
 import './LinearRegressionChart.css';
 
-const LinearRegressionChart = () => {
-  const [graphData, setGraphData] = useState(null);
-  const [columnType, setColumnType] = useState('responseTime');
+const LinearRegressionChart = (props) => {
+  const { columnType, xAxisLabel, margin, width, height, showLines } = props;
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/v1/data')
-      .then(response => response.json())
-      .then(data => {
-        setGraphData(data);
-        drawChart(data);
-      })
-    return;
-  }, []);
+    drawChart(props.data)
+  }, [props.columnType]); // eslint-disable-line
 
-  const parseData = (data) => {
-    // TO DO - Calculate regression data dynamically on button click
+  useLayoutEffect(() => {
+    if (showLines) {
+      addLines(props.data);
+    } else {
+      removeLines();
+    }
+  }, [showLines]); // eslint-disable-line
+  const removeLines = () => {
+    d3.selectAll("path.line").remove();
+  }
 
-    return Object.keys(data.data).map((key, index) => {
-      const xyData = data.data[key].map(item => {
-        return [item.serverLoad, item[columnType]];
-      })
-      const regressionData = regression.linear(xyData);
-      const { points } = regressionData;
+  const addLines = (data) => {
+    const parsedData = parseData(data, columnType);
+    const { maxX, maxY, minX, minY } = getMaxMin(parsedData);
+    const x = d3.scaleLinear().range([0, width]);
+    const y = d3.scaleLinear().range([height, 0]);
+    const regressionData = calculateRegressions(data, columnType);
 
-      return {
-        server: key,
-        regressionPoints: points,
-        points: data.data[key].map((item, index) => {
-          return {
-            x: item.serverLoad,
-            y: item[columnType],
-            yhat: points[index][1]
-          };
-        })
-      }
-    })
+    y.domain([minY - 1, maxY + 1]);
+    x.domain([minX - 0.5, maxX + 0.5]);
+
+    regressionData.forEach((dataSet, index) => {
+      const { points } = dataSet;
+      const line = d3.line()
+        .x((d) => x(d.x))
+        .y((d) => y(d.yhat));
+
+      d3.select("svg").select("g").append("path")
+        .datum(points)
+        .attr("class", `line${index + 1} line`)
+        .attr("d", line);
+    });
   }
 
   const drawChart = (data) => {
-    const parsedData = parseData(data);
-
-    const margin = {
-      top: 20,
-      right: 20,
-      bottom: 30,
-      left: 40
-    },
-    width = 600 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    const parsedData = parseData(data, columnType);
 
     const x = d3.scaleLinear().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
 
-    const xAxis = d3.axisBottom().scale(x).ticks(20)
+    const makeGridLines = type => {
+      return type === 'x'
+        ? d3.axisBottom(x).ticks(10)
+        : d3.axisLeft(y).ticks(10);
+    }
 
-    const yAxis = d3.axisLeft().scale(y).ticks(20)
+    const xAxis = d3.axisBottom().scale(x).ticks(20);
+    const yAxis = d3.axisLeft().scale(y).ticks(20);
+
+    if (!d3.select("#chart svg").empty()) d3.select("#chart svg").remove();
 
     const svg = d3.select("#chart").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
+      .attr("id", "chart-svg")
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    let fullData = [];
+    svg.append("g")
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + height + ")")
+      .call(makeGridLines('x')
+        .tickSize(-height)
+        .tickFormat("")
+      );
 
-    parsedData.forEach(dataSet => {
-      fullData.push(dataSet.points);
-    })
+    svg.append("g")
+      .attr("class", "grid")
+      .call(makeGridLines('y')
+        .tickSize(-width)
+        .tickFormat("")
+      );
 
-    fullData = fullData.flat();
-    const xData = fullData.map(point => point.x);
-
-    const yData = fullData.map(point => point.y);
-    const maxX = Math.max(...xData);
-    const maxY = Math.max(...yData);
-    const minX = Math.min(...xData);
-    const minY = Math.min(...yData);
-
-    // TO DO - Create line dynamically on button click
-    const line = d3.line()
-      .x((d) => {
-        return x(d.x);
-      })
-      .y((d) => {
-        return y(d.yhat);
-      });
+    const { maxX, maxY, minX, minY } = getMaxMin(parsedData);
 
     y.domain([minY - 1, maxY + 1]);
     x.domain([minX - 0.5, maxX + 0.5]);
@@ -98,48 +93,48 @@ const LinearRegressionChart = () => {
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
-      .append("text")
-      .attr("class", "label")
-      .attr("x", width)
-      .attr("y", -6)
-      .style("text-anchor", "end")
-      .text("X-Value");
+      // .append("text")
+      // .attr("class", "label")
+      // .attr("x", width)
+      // .attr("y", -6)
+      // .style("text-anchor", "end")
+      // .text("X-Value");
 
     svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
-      .append("text")
-      .attr("class", "label")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Y-Value")
+      // .append("text")
+      // .attr("class", "label")
+      // .attr("transform", "rotate(-90)")
+      // .attr("y", 6)
+      // .attr("dy", ".71em")
+      // .style("text-anchor", "end")
+      // .text("Y-Value")
 
     svg.append("text")
       .attr(
         "transform",
-        "translate(" + (width / 2) + " ," + (height + 30) + ")"
+        "translate(" + (width / 2) + " ," + (height + margin.bottom/2 + 10) + ")"
       )
+      .attr("class","axis-label")
       .style("text-anchor", "middle")
-      .text("X-AXIS");
+      .text(xAxisLabel);
+
+    const formattedColumnType = columnType.replace( /([A-Z])/g, " $1" );
+    const yAxisLabel =
+      formattedColumnType.charAt(0).toUpperCase() + formattedColumnType.slice(1);
 
     svg.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin.left)
       .attr("x",0 - (height / 2))
       .attr("dy", "1em")
+      .attr("class","axis-label")
       .style("text-anchor", "middle")
-      .text("Y-AXIS");
+      .text(yAxisLabel);
 
     parsedData.forEach((dataSet, index) => {
       const { points } = dataSet;
-
-      points.forEach((d) => {
-        d.x = +d.x;
-        d.y = +d.y;
-        d.yhat = +d.yhat;
-      });
 
       svg.selectAll("dot")
         .data(points)
@@ -152,13 +147,27 @@ const LinearRegressionChart = () => {
         .attr("cy", (d) => {
             return y(d.y);
         });
-
-      // TO DO - Create line dynamically on button click
-      svg.append("path")
-        .datum(points)
-        .attr("class", `line${index + 1}`)
-        .attr("d", line);
     })
+  }
+
+  // TO DO: Move in Parse Data Utility
+  const getMaxMin = (data) => {
+    let fullData = [];
+
+    data.forEach(dataSet => {
+      fullData.push(dataSet.points);
+    })
+
+    fullData = fullData.flat();
+    const xData = fullData.map(point => point.x);
+    const yData = fullData.map(point => point.y);
+
+    return {
+      maxX: Math.max(...xData),
+      maxY: Math.max(...yData),
+      minX: Math.min(...xData),
+      minY: Math.min(...yData)
+    }
   }
 
   return (

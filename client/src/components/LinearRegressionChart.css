@@ -6,9 +6,12 @@
 }
 
 .axis text {
-
   font-size: 10px;
   font-family: sans-serif;
+}
+
+.button {
+  width: 150px;
 }
 
 .chart-container {
@@ -66,4 +69,14 @@
   stroke: green;
   fill: none;
   stroke-width: 3;
+}
+
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+}
+
+.axis-label {
+  font-weight: bold;
 }
