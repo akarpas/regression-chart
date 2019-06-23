@@ -8,7 +8,15 @@ const App = () => {
     const [columnType, setColumnType] = useState("responseTime");
     const [data, setData] = useState(null);
     const [showLines, setShowLines] = useState(null);
-    const [windowWidth, setWindowWidth] = useState(null);
+    const margin = {
+        top: 20,
+        right: 20,
+        bottom: 60,
+        left: 40
+    };
+    const [width, setWidth] = useState(600 - margin.left - margin.right);
+    const height = 400 - margin.top - margin.bottom;
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
         fetch("http://localhost:4000/api/v1/data")
@@ -28,14 +36,6 @@ const App = () => {
         };
     }, []);
 
-    const margin = {
-            top: 20,
-            right: 20,
-            bottom: 60,
-            left: 40
-        },
-        width = 600 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
     const isResponseTime = columnType === "responseTime";
 
     return (
