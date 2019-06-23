@@ -12,8 +12,8 @@ const calcData = (dataSets) => {
         serverLoad: (j * 2 + 20),
         // Add i to make each dataset value a bit larger than previous
         // for presentation reasons
-        responseTime: Math.random() + j + (i * 3),
-        processingPower: Math.random() + ((i + 1) * 3),
+        responseTime: Math.random() + j + (i * 3.5) + (Math.random() < 0.5 ? -1 : 1.2),
+        processingPower: Math.random() + ((i + 1) * 3 + (Math.random() < 0.5 ? -0.25 : 0.5)),
       };
       data[serverId].push(set);
     }
