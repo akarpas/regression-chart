@@ -19,6 +19,7 @@ const App = () => {
     const height = 400 - margin.top - margin.bottom;
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isMinimized, setIsMinimized] = useState(false);
+    const [initialRender, setInitialRender] = useState(true);
 
     useEffect(() => {
         fetch("http://localhost:4000/api/v1/data")
@@ -41,11 +42,13 @@ const App = () => {
 
     if (windowWidth <= 600 && !isMinimized) {
         setWidth(300 - margin.left - margin.right);
-        setShowLines(false);
+        if (!initialRender) setShowLines(false);
+        setInitialRender(false);
         setIsMinimized(true);
     } else if (windowWidth > 600 && isMinimized) {
         setWidth(600 - margin.left - margin.right);
-        setShowLines(false);
+        if (!initialRender) setShowLines(false);
+        setInitialRender(false);
         setIsMinimized(false);
     }
 
