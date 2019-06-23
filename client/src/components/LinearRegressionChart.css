@@ -108,3 +108,17 @@
   stroke: lightgray;
   font-weight: bold;
 }
+
+.tooltip {
+  position: absolute;
+  text-align: left;
+  width: 60px;
+  height: 28px;
+  padding: 2px;
+  font-size: 10px;
+  font-weight: bold;
+  background: rgba(0,0,0,0.1);
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
