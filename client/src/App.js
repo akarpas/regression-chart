@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import LinearRegressionChart from "./components/LinearRegressionChart";
+import config from "./config.json";
 import style from "./App.module.css";
 
 const X_AXIS_LABEL = "Server Load";
+const API_URL = config[process.env.NODE_ENV].apiUrl;
 
 const App = () => {
     const [columnType, setColumnType] = useState("responseTime");
@@ -20,14 +22,24 @@ const App = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isMinimized, setIsMinimized] = useState(false);
     const [initialRender, setInitialRender] = useState(true);
+    const [apiError, setApiError] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:4000/api/v1/data")
-            .then(response => response.json())
+        fetch(API_URL)
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error(response.statusText);
+                }
+                return response.json();
+            })
             .then(result => {
                 setIsDataLoading(false);
                 const { data } = result;
                 setData(data);
+            })
+            .catch(error => {
+                setIsDataLoading(false);
+                setApiError(true);
             });
 
         const handleResize = () => {
@@ -57,7 +69,12 @@ const App = () => {
     return (
         <div className={style.app}>
             <h2>Server Performance Graph</h2>
-            {isDataLoading && <div className={style.loading}>Loading...</div>}
+            {isDataLoading && <div className={style.message}>Loading...</div>}
+            {apiError && (
+                <div className={style.message}>
+                    Server error... please try again
+                </div>
+            )}
             {data && (
                 <LinearRegressionChart
                     data={data}
