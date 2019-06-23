@@ -36,6 +36,7 @@ const App = () => {
                 setData(data);
             })
             .catch(error => {
+                setIsDataLoading(false);
                 setApiError(true);
             });
 
@@ -66,7 +67,12 @@ const App = () => {
     return (
         <div className={style.app}>
             <h2>Server Performance Graph</h2>
-            {isDataLoading && <div className={style.loading}>Loading...</div>}
+            {isDataLoading && <div className={style.message}>Loading...</div>}
+            {apiError && (
+                <div className={style.message}>
+                    Server error... please try again
+                </div>
+            )}
             {data && (
                 <LinearRegressionChart
                     data={data}
