@@ -51,24 +51,28 @@
   stroke: #c9e5c5;
   fill: none;
   stroke-width: 1.5;
+  opacity: 0;
 }
 
 .line2 {
   stroke: #74d365;
   fill: none;
   stroke-width: 1.5;
+  opacity: 0;
 }
 
 .line3 {
   stroke: #249313;
   fill: none;
   stroke-width: 1.5;
+  opacity: 0;
 }
 
 .line4 {
   stroke: #0d4f03;
   fill: none;
   stroke-width: 1.5;
+  opacity: 0;
 }
 
 .grid line {

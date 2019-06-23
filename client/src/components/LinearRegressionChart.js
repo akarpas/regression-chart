@@ -224,6 +224,9 @@ const LinearRegressionChart = props => {
                 .datum(points)
                 .attr("class", `line${index + 1} line`)
                 .attr("d", line)
+                .transition()
+                .duration(200)
+                .style("opacity", 0.9);
         });
     };
 
