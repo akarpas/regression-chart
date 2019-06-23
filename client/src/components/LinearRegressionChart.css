@@ -29,44 +29,44 @@
 
 .dot1 {
   stroke: black;
-  fill: yellow
+  fill: #c9e5c5;
 }
 
 .dot2 {
   stroke: black;
-  fill: red
+  fill: #74d365
 }
 
 .dot3 {
   stroke: black;
-  fill: blue
+  fill: #249313
 }
 
 .dot4 {
   stroke: black;
-  fill: green
+  fill: #0d4f03
 }
 
 .line1 {
-  stroke: yellow;
+  stroke: #c9e5c5;
   fill: none;
   stroke-width: 1.5;
 }
 
 .line2 {
-  stroke: red;
+  stroke: #74d365;
   fill: none;
   stroke-width: 1.5;
 }
 
 .line3 {
-  stroke: blue;
+  stroke: #249313;
   fill: none;
   stroke-width: 1.5;
 }
 
 .line4 {
-  stroke: green;
+  stroke: #0d4f03;
   fill: none;
   stroke-width: 1.5;
 }
