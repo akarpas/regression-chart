@@ -27,3 +27,8 @@
 .button:hover {
   background-color: white;
 }
+
+.loading {
+  margin: 2em 0;
+  font-weight: bold;
+}

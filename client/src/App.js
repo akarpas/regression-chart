@@ -7,6 +7,7 @@ const X_AXIS_LABEL = "Server Load";
 const App = () => {
     const [columnType, setColumnType] = useState("responseTime");
     const [data, setData] = useState(null);
+    const [isDataLoading, setIsDataLoading] = useState(true);
     const [showLines, setShowLines] = useState(null);
     const margin = {
         top: 20,
@@ -23,6 +24,7 @@ const App = () => {
         fetch("http://localhost:4000/api/v1/data")
             .then(response => response.json())
             .then(result => {
+                setIsDataLoading(false);
                 const { data } = result;
                 setData(data);
             });
@@ -52,6 +54,7 @@ const App = () => {
     return (
         <div className={style.app}>
             <h2>Server Performance Graph</h2>
+            {isDataLoading && <div className={style.loading}>Loading...</div>}
             {data && (
                 <LinearRegressionChart
                     data={data}
