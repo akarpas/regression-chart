@@ -80,3 +80,31 @@
 .axis-label {
   font-weight: bold;
 }
+
+.chart-legend1 {
+  fill: #c9e5c5;
+  stroke-width: 0.25;
+  stroke: lightgray;
+  font-weight: bold;
+}
+
+.chart-legend2 {
+  fill: #74d365;
+  stroke-width: 0.25;
+  stroke: lightgray;
+  font-weight: bold;
+}
+
+.chart-legend3 {
+  fill: #249313;
+  stroke-width: 0.25;
+  stroke: lightgray;
+  font-weight: bold;
+}
+
+.chart-legend4 {
+  fill: #0d4f03;
+  stroke-width: 0.25;
+  stroke: lightgray;
+  font-weight: bold;
+}

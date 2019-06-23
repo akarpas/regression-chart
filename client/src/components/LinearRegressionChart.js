@@ -1,5 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { parseData, calculateMaxMin, calculateRegressions } from "../utils/dataParser";
+import {
+    parseData,
+    calculateMaxMin,
+    calculateRegressions
+} from "../utils/dataParser";
 import * as d3 from "d3";
 
 import "./LinearRegressionChart.css";
@@ -54,6 +58,7 @@ const LinearRegressionChart = props => {
         this.addAxes();
         this.addGrid();
         this.addPoints();
+        this.addLegend();
         setThat(chart);
     };
 
@@ -134,6 +139,20 @@ const LinearRegressionChart = props => {
                 .attr("cy", d => {
                     return this.y(d.y);
                 });
+        });
+    };
+
+    Chart.prototype.addLegend = function() {
+        this.data.forEach((dataSet, index) => {
+          const { server } = dataSet;
+          const capitalizedName = server.charAt(0).toUpperCase() + server.slice(1);
+          const label = `${capitalizedName.split('_')[0]} ${capitalizedName.split('_')[1]}`
+          this.plot
+            .append("text")
+            .attr("y", -2)
+            .attr("x", 0 + this.margin.top / 2 + (index * 100))
+            .attr("class", `chart-legend${index + 1}`)
+            .text(label);
         });
     };
 
