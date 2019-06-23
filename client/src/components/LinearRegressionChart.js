@@ -1,10 +1,11 @@
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { parseData, calculateRegressions } from "../utils/dataParser";
 import * as d3 from "d3";
 
 import "./LinearRegressionChart.css";
 
 const LinearRegressionChart = props => {
+    const [ that, setThat ] = useState();
     const { columnType, xAxisLabel, margin, width, height, showLines } = props;
 
     function Chart(options) {
@@ -25,7 +26,7 @@ const LinearRegressionChart = props => {
 
     useLayoutEffect(() => {
         if (showLines) {
-            addLines(props.data);
+            chart.addLines();
         } else {
             removeLines();
         }
@@ -53,6 +54,7 @@ const LinearRegressionChart = props => {
         this.addAxes();
         this.addGrid();
         this.addPoints();
+        setThat(chart);
     };
 
     Chart.prototype.createScales = function() {
@@ -162,25 +164,16 @@ const LinearRegressionChart = props => {
             );
     };
 
-    const addLines = data => {
-        const parsedData = parseData(data, columnType);
-        const { maxX, maxY, minX, minY } = getMaxMin(parsedData);
-        const x = d3.scaleLinear().range([0, width]);
-        const y = d3.scaleLinear().range([height, 0]);
-        const regressionData = calculateRegressions(data, columnType);
-
-        y.domain([minY - 1, maxY + 1]);
-        x.domain([minX - 0.5, maxX + 0.5]);
-
+    Chart.prototype.addLines = function() {
+        const regressionData = calculateRegressions(that.rawData, columnType);
         regressionData.forEach((dataSet, index) => {
             const { points } = dataSet;
             const line = d3
                 .line()
-                .x(d => x(d.x))
-                .y(d => y(d.yhat));
+                .x(d => that.x(d.x))
+                .y(d => that.y(d.yhat));
 
-            d3.select("svg")
-                .select("g")
+            that.plot
                 .append("path")
                 .datum(points)
                 .attr("class", `line${index + 1} line`)
