@@ -64,7 +64,7 @@ const App = () => {
                 />
             )}
             <button
-                className="button"
+                className={style.button}
                 onClick={() => {
                     setColumnType(
                         isResponseTime ? "processingPower" : "responseTime"
@@ -74,7 +74,7 @@ const App = () => {
             >
                 {isResponseTime ? "Processing Power" : "Response Time"}
             </button>
-            <button className="button" onClick={() => setShowLines(!showLines)}>
+            <button className={style.button} onClick={() => setShowLines(!showLines)}>
                 {showLines ? "Hide Regressions" : "Calculate Regressions"}
             </button>
         </div>
