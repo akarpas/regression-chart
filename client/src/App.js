@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LinearRegressionChart from "./components/LinearRegressionChart";
+import Controls from "./components/Controls";
 import config from "./config.json";
 import style from "./App.module.css";
 
@@ -86,25 +87,17 @@ const App = () => {
                     showLines={showLines}
                 />
             )}
-            <div className={style.buttons}>
-                <button
-                    className={style.button}
-                    onClick={() => {
-                        setColumnType(
-                            isResponseTime ? "processingPower" : "responseTime"
-                        );
-                        setShowLines(false);
-                    }}
-                >
-                    {isResponseTime ? "Processing Power" : "Response Time"}
-                </button>
-                <button
-                    className={style.button}
-                    onClick={() => setShowLines(!showLines)}
-                >
-                    {showLines ? "Hide Regressions" : "Calculate Regressions"}
-                </button>
-            </div>
+            <Controls
+              setColumnType={() => {
+                  setColumnType(
+                      isResponseTime ? "processingPower" : "responseTime"
+                  );
+                  setShowLines(false);
+              }}
+              setShowLines={() => setShowLines(!showLines)}
+              isResponseTime={isResponseTime}
+              showLines={showLines}
+            />
         </div>
     );
 };

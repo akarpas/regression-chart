@@ -1,11 +1,24 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React from "react";
 
-import style from './Controls.module.scss';
+import style from './Controls.module.css';
 
 const Controls = props => {
+    const { setColumnType, setShowLines, isResponseTime, showLines } = props;
 
     return (
-        <div className="chart-container">
+        <div className={style.buttons}>
+            <button
+                className={style.button}
+                onClick={setColumnType}
+            >
+                {isResponseTime ? "Processing Power" : "Response Time"}
+            </button>
+            <button
+                className={style.button}
+                onClick={setShowLines}
+            >
+                {showLines ? "Hide Regressions" : "Calculate Regressions"}
+            </button>
         </div>
     );
 };
