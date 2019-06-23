@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import LinearRegressionChart from "./components/LinearRegressionChart";
+import config from "./config.json";
 import style from "./App.module.css";
 
 const X_AXIS_LABEL = "Server Load";
+const API_URL = config[process.env.NODE_ENV].apiUrl;
 
 const App = () => {
     const [columnType, setColumnType] = useState("responseTime");
@@ -23,7 +25,7 @@ const App = () => {
     const [apiError, setApiError] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:4000/api/v1/data")
+        fetch(API_URL)
             .then(response => {
                 if (response.status !== 200) {
                     throw Error(response.statusText);
