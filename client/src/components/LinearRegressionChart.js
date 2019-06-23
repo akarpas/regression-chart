@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { parseData, calculateRegressions } from "../utils/dataParser";
+import { parseData, calculateMaxMin, calculateRegressions } from "../utils/dataParser";
 import * as d3 from "d3";
 
 import "./LinearRegressionChart.css";
@@ -60,7 +60,7 @@ const LinearRegressionChart = props => {
     Chart.prototype.createScales = function() {
         const x = d3.scaleLinear().range([0, this.width]);
         const y = d3.scaleLinear().range([this.height, 0]);
-        const { maxX, maxY, minX, minY } = getMaxMin(this.data);
+        const { maxX, maxY, minX, minY } = calculateMaxMin(this.data);
         y.domain([minY - 1, maxY + 1]);
         x.domain([minX - 0.5, maxX + 0.5]);
         this.x = x;
@@ -183,25 +183,6 @@ const LinearRegressionChart = props => {
 
     Chart.prototype.removeLines = function() {
         that.plot.selectAll("path.line").remove();
-    };
-
-    const getMaxMin = data => {
-        let fullData = [];
-
-        data.forEach(dataSet => {
-            fullData.push(dataSet.points);
-        });
-
-        fullData = fullData.flat();
-        const xData = fullData.map(point => point.x);
-        const yData = fullData.map(point => point.y);
-
-        return {
-            maxX: Math.max(...xData),
-            maxY: Math.max(...yData),
-            minX: Math.min(...xData),
-            minY: Math.min(...yData)
-        };
     };
 
     return (
