@@ -50,25 +50,25 @@
 .line1 {
   stroke: yellow;
   fill: none;
-  stroke-width: 3;
+  stroke-width: 1.5;
 }
 
 .line2 {
   stroke: red;
   fill: none;
-  stroke-width: 3;
+  stroke-width: 1.5;
 }
 
 .line3 {
   stroke: blue;
   fill: none;
-  stroke-width: 3;
+  stroke-width: 1.5;
 }
 
 .line4 {
   stroke: green;
   fill: none;
-  stroke-width: 3;
+  stroke-width: 1.5;
 }
 
 .grid line {
