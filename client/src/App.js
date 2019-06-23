@@ -20,14 +20,23 @@ const App = () => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [isMinimized, setIsMinimized] = useState(false);
     const [initialRender, setInitialRender] = useState(true);
+    const [apiError, setApiError] = useState(false);
 
     useEffect(() => {
         fetch("http://localhost:4000/api/v1/data")
-            .then(response => response.json())
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error(response.statusText);
+                }
+                return response.json();
+            })
             .then(result => {
                 setIsDataLoading(false);
                 const { data } = result;
                 setData(data);
+            })
+            .catch(error => {
+                setApiError(true);
             });
 
         const handleResize = () => {
