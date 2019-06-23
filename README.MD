@@ -14,6 +14,6 @@ Node version is lts/carbon
 Server will run on localhost:4000 (no view just API to serve client) in order to serve the random data to the frontend app
 
 ##### CLIENT
-```cd.. && cd client && yarn install && yarn start```
+```cd client && yarn install && yarn start```
 
 Client will run on localhost:3000
