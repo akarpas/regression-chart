@@ -7,7 +7,7 @@ const X_AXIS_LABEL = 'Server Load';
 const App = () => {
   const [columnType, setColumnType] = useState('responseTime');
   const [data, setData] = useState(null);
-  const [showLines, setShowLines] = useState(false);
+  const [showLines, setShowLines] = useState(null);
 
   useEffect(() => {
     fetch('http://localhost:4000/api/v1/data')

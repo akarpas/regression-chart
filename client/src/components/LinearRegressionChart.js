@@ -5,7 +5,7 @@ import * as d3 from "d3";
 import "./LinearRegressionChart.css";
 
 const LinearRegressionChart = props => {
-    const [ that, setThat ] = useState();
+    const [that, setThat] = useState();
     const { columnType, xAxisLabel, margin, width, height, showLines } = props;
 
     function Chart(options) {
@@ -27,8 +27,8 @@ const LinearRegressionChart = props => {
     useLayoutEffect(() => {
         if (showLines) {
             chart.addLines();
-        } else {
-            removeLines();
+        } else if (showLines !== null) {
+            chart.removeLines();
         }
     }, [showLines]); // eslint-disable-line
 
@@ -181,8 +181,8 @@ const LinearRegressionChart = props => {
         });
     };
 
-    const removeLines = () => {
-        d3.selectAll("path.line").remove();
+    Chart.prototype.removeLines = function() {
+        that.plot.selectAll("path.line").remove();
     };
 
     const getMaxMin = data => {
