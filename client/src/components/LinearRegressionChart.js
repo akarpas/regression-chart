@@ -20,7 +20,7 @@ const LinearRegressionChart = props => {
     });
 
     useEffect(() => {
-        drawChart(props.data);
+        chart.draw();
     }, [props.columnType]); // eslint-disable-line
 
     useLayoutEffect(() => {
@@ -31,92 +31,69 @@ const LinearRegressionChart = props => {
         }
     }, [showLines]); // eslint-disable-line
 
-    const drawChart = data => {
-        const parsedData = parseData(data, columnType);
+    Chart.prototype.draw = function() {
+        this.width = width;
+        this.height = height;
+        this.margin = margin;
+        this.element = document.getElementById("chart");
+        this.element.innerHTML = "";
+        const svg = d3.select(this.element).append("svg");
+        svg.attr("width", this.width + this.margin.left + this.margin.right);
+        svg.attr("height", this.height + this.margin.top + this.margin.bottom);
+        svg.attr("id", "chart-svg");
 
-        const x = d3.scaleLinear().range([0, width]);
-        const y = d3.scaleLinear().range([height, 0]);
-
-        const makeGridLines = type => {
-            return type === "x"
-                ? d3.axisBottom(x).ticks(10)
-                : d3.axisLeft(y).ticks(10);
-        };
-
-        const xAxis = d3
-            .axisBottom()
-            .scale(x)
-            .ticks(20);
-        const yAxis = d3
-            .axisLeft()
-            .scale(y)
-            .ticks(20);
-
-        if (!d3.select("#chart svg").empty()) d3.select("#chart svg").remove();
-
-        const svg = d3
-            .select("#chart")
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .attr("id", "chart-svg")
+        this.plot = svg
             .append("g")
             .attr(
                 "transform",
                 "translate(" + margin.left + "," + margin.top + ")"
             );
 
-        svg.append("g")
-            .attr("class", "grid")
-            .attr("transform", "translate(0," + height + ")")
-            .call(
-                makeGridLines("x")
-                    .tickSize(-height)
-                    .tickFormat("")
-            );
+        this.createScales();
+        this.addAxes();
+        this.addGrid();
+        this.addPoints();
+    };
 
-        svg.append("g")
-            .attr("class", "grid")
-            .call(
-                makeGridLines("y")
-                    .tickSize(-width)
-                    .tickFormat("")
-            );
-
-        const { maxX, maxY, minX, minY } = getMaxMin(parsedData);
-
+    Chart.prototype.createScales = function() {
+        const x = d3.scaleLinear().range([0, this.width]);
+        const y = d3.scaleLinear().range([this.height, 0]);
+        const { maxX, maxY, minX, minY } = getMaxMin(this.data);
         y.domain([minY - 1, maxY + 1]);
         x.domain([minX - 0.5, maxX + 0.5]);
+        this.x = x;
+        this.y = y;
+    };
 
-        svg.append("g")
+    Chart.prototype.addAxes = function() {
+        const xAxis = d3
+            .axisBottom()
+            .scale(this.x)
+            .ticks(20);
+        const yAxis = d3
+            .axisLeft()
+            .scale(this.y)
+            .ticks(20);
+
+        this.plot
+            .append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
+            .attr("transform", "translate(0," + this.height + ")")
             .call(xAxis);
-        // .append("text")
-        // .attr("class", "label")
-        // .attr("x", width)
-        // .attr("y", -6)
-        // .style("text-anchor", "end")
-        // .text("X-Value");
 
-        svg.append("g")
+        this.plot
+            .append("g")
             .attr("class", "y axis")
             .call(yAxis);
-        // .append("text")
-        // .attr("class", "label")
-        // .attr("transform", "rotate(-90)")
-        // .attr("y", 6)
-        // .attr("dy", ".71em")
-        // .style("text-anchor", "end")
-        // .text("Y-Value")
 
-        svg.append("text")
+        this.plot
+            .append("text")
             .attr(
                 "transform",
                 "translate(" +
-                    width / 2 +
+                    this.width / 2 +
                     " ," +
-                    (height + margin.bottom / 2 + 10) +
+                    (this.height + this.margin.bottom / 2 + 10) +
                     ")"
             )
             .attr("class", "axis-label")
@@ -128,31 +105,61 @@ const LinearRegressionChart = props => {
             formattedColumnType.charAt(0).toUpperCase() +
             formattedColumnType.slice(1);
 
-        svg.append("text")
+        this.plot
+            .append("text")
             .attr("transform", "rotate(-90)")
-            .attr("y", 0 - margin.left)
-            .attr("x", 0 - height / 2)
+            .attr("y", 0 - this.margin.left)
+            .attr("x", 0 - this.height / 2)
             .attr("dy", "1em")
             .attr("class", "axis-label")
             .style("text-anchor", "middle")
             .text(yAxisLabel);
+    };
 
-        parsedData.forEach((dataSet, index) => {
+    Chart.prototype.addPoints = function() {
+        this.data.forEach((dataSet, index) => {
             const { points } = dataSet;
-
-            svg.selectAll("dot")
+            this.plot
+                .selectAll("dot")
                 .data(points)
                 .enter()
                 .append("circle")
                 .attr("class", `dot${index + 1}`)
                 .attr("r", 3.5)
                 .attr("cx", d => {
-                    return x(d.x);
+                    return this.x(d.x);
                 })
                 .attr("cy", d => {
-                    return y(d.y);
+                    return this.y(d.y);
                 });
         });
+    };
+
+    Chart.prototype.addGrid = function() {
+        const makeGridLines = type => {
+            return type === "x"
+                ? d3.axisBottom(this.x).ticks(10)
+                : d3.axisLeft(this.y).ticks(10);
+        };
+
+        this.plot
+            .append("g")
+            .attr("class", "grid")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(
+                makeGridLines("x")
+                    .tickSize(-this.height)
+                    .tickFormat("")
+            );
+
+        this.plot
+            .append("g")
+            .attr("class", "grid")
+            .call(
+                makeGridLines("y")
+                    .tickSize(-this.width)
+                    .tickFormat("")
+            );
     };
 
     const addLines = data => {
