@@ -51,6 +51,7 @@ const App = () => {
 
     return (
         <div className={style.app}>
+            <h2>Server Performance Graph</h2>
             {data && (
                 <LinearRegressionChart
                     data={data}
