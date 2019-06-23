@@ -1,5 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { parseData, calculateMaxMin, calculateRegressions } from "../utils/dataParser";
+import {
+    parseData,
+    calculateMaxMin,
+    calculateRegressions
+} from "../utils/dataParser";
 import * as d3 from "d3";
 
 import "./LinearRegressionChart.css";
@@ -54,6 +58,7 @@ const LinearRegressionChart = props => {
         this.addAxes();
         this.addGrid();
         this.addPoints();
+        this.addLegend();
         setThat(chart);
     };
 
@@ -119,6 +124,12 @@ const LinearRegressionChart = props => {
     };
 
     Chart.prototype.addPoints = function() {
+        const tooltip = d3
+            .select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
         this.data.forEach((dataSet, index) => {
             const { points } = dataSet;
             this.plot
@@ -133,7 +144,42 @@ const LinearRegressionChart = props => {
                 })
                 .attr("cy", d => {
                     return this.y(d.y);
+                })
+                .on("mouseover", d => {
+                    const tooltipHtml =
+                        "x: " + d.x.toFixed(2) + "<br/> y: " + d.y.toFixed(2);
+                    tooltip
+                        .transition()
+                        .duration(200)
+                        .style("opacity", 0.9);
+                    tooltip
+                        .html(tooltipHtml)
+                        .style("left", d3.event.pageX - 15 + "px")
+                        .style("top", d3.event.pageY - 40 + "px");
+                })
+                .on("mouseout", d => {
+                    tooltip
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 });
+        });
+    };
+
+    Chart.prototype.addLegend = function() {
+        this.data.forEach((dataSet, index) => {
+            const { server } = dataSet;
+            const capitalizedName =
+                server.charAt(0).toUpperCase() + server.slice(1);
+            const label = `${capitalizedName.split("_")[0]} ${
+                capitalizedName.split("_")[1]
+            }`;
+            this.plot
+                .append("text")
+                .attr("y", -2)
+                .attr("x", 0 + this.margin.top / 2 + index * 75)
+                .attr("class", `chart-legend${index + 1}`)
+                .text(label);
         });
     };
 
@@ -177,7 +223,10 @@ const LinearRegressionChart = props => {
                 .append("path")
                 .datum(points)
                 .attr("class", `line${index + 1} line`)
-                .attr("d", line);
+                .attr("d", line)
+                .transition()
+                .duration(200)
+                .style("opacity", 0.9);
         });
     };
 
