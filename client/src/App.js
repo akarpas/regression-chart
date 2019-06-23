@@ -63,20 +63,25 @@ const App = () => {
                     showLines={showLines}
                 />
             )}
-            <button
-                className={style.button}
-                onClick={() => {
-                    setColumnType(
-                        isResponseTime ? "processingPower" : "responseTime"
-                    );
-                    setShowLines(false);
-                }}
-            >
-                {isResponseTime ? "Processing Power" : "Response Time"}
-            </button>
-            <button className={style.button} onClick={() => setShowLines(!showLines)}>
-                {showLines ? "Hide Regressions" : "Calculate Regressions"}
-            </button>
+            <div className={style.buttons}>
+                <button
+                    className={style.button}
+                    onClick={() => {
+                        setColumnType(
+                            isResponseTime ? "processingPower" : "responseTime"
+                        );
+                        setShowLines(false);
+                    }}
+                >
+                    {isResponseTime ? "Processing Power" : "Response Time"}
+                </button>
+                <button
+                    className={style.button}
+                    onClick={() => setShowLines(!showLines)}
+                >
+                    {showLines ? "Hide Regressions" : "Calculate Regressions"}
+                </button>
+            </div>
         </div>
     );
 };
