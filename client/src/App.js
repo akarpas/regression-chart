@@ -17,6 +17,7 @@ const App = () => {
     const [width, setWidth] = useState(600 - margin.left - margin.right);
     const height = 400 - margin.top - margin.bottom;
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [isMinimized, setIsMinimized] = useState(false);
 
     useEffect(() => {
         fetch("http://localhost:4000/api/v1/data")
@@ -35,6 +36,16 @@ const App = () => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
+
+    if (windowWidth <= 600 && !isMinimized) {
+        setWidth(300 - margin.left - margin.right);
+        setShowLines(false);
+        setIsMinimized(true);
+    } else if (windowWidth > 600 && isMinimized) {
+        setWidth(600 - margin.left - margin.right);
+        setShowLines(false);
+        setIsMinimized(false);
+    }
 
     const isResponseTime = columnType === "responseTime";
 
