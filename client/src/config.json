@@ -3,6 +3,6 @@
         "apiUrl": "http://localhost:4000/api/v1/data"
     },
     "production": {
-        "apiUrl": "http://localhost:4000/api/v1/data"
+        "apiUrl": "https://fake-data-server.herokuapp.com/api/v1/data"
     }
 }
