@@ -177,7 +177,7 @@ const LinearRegressionChart = props => {
             this.plot
                 .append("text")
                 .attr("y", -2)
-                .attr("x", 0 + this.margin.top / 2 + index * 100)
+                .attr("x", 0 + this.margin.top / 2 + index * 75)
                 .attr("class", `chart-legend${index + 1}`)
                 .text(label);
         });
