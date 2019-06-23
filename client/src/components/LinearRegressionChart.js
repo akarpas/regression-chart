@@ -22,7 +22,7 @@ const LinearRegressionChart = props => {
 
     useEffect(() => {
         chart.draw();
-    }, [props.columnType]); // eslint-disable-line
+    }, [props.columnType, props.width]); // eslint-disable-line
 
     useLayoutEffect(() => {
         if (showLines) {
