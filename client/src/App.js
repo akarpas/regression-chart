@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import LinearRegressionChart from "./components/LinearRegressionChart";
 import Controls from "./components/Controls";
 import config from "./config.json";
+import axios from "axios";
+
 import style from "./App.module.css";
 
 const X_AXIS_LABEL = "Server Load";
@@ -26,19 +28,16 @@ const App = () => {
     const [apiError, setApiError] = useState(false);
 
     useEffect(() => {
-        fetch(API_URL)
+        axios.get(API_URL)
             .then(response => {
                 if (response.status !== 200) {
                     throw Error(response.statusText);
                 }
-                return response.json();
-            })
-            .then(result => {
-                setIsDataLoading(false);
-                const { data } = result;
+                const { data } = response.data;
                 setData(data);
+                setIsDataLoading(false);
             })
-            .catch(error => {
+            .catch(() => {
                 setIsDataLoading(false);
                 setApiError(true);
             });
