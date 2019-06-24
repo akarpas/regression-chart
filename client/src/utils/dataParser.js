@@ -21,7 +21,7 @@ const calculateMaxMin = data => {
         fullData.push(dataSet.points);
     });
 
-    fullData = fullData.flat();
+    fullData = fullData.reduce((acc, val) => acc.concat(val), []);
     const xData = fullData.map(point => point.x);
     const yData = fullData.map(point => point.y);
 
